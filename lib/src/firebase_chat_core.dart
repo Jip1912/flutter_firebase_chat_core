@@ -114,10 +114,38 @@ class FirebaseChatCore {
   /// rooms list
   Future<void> createUserInFirestore(types.User user) async {
     await FirebaseFirestore.instance.collection('users').doc(user.id).set({
+      'id': user.id,
       'createdAt': FieldValue.serverTimestamp(),
       'firstName': user.firstName,
       'imageUrl': user.imageUrl,
       'lastName': user.lastName,
+      'lastSeen': user.lastSeen,
+      'metadata': user.metadata,
+      'role': user.role?.toShortString(),
+    });
+  }
+
+  Future<void> createBijlesGeverInFirestore(types.User user) async {
+    await FirebaseFirestore.instance.collection('bijlesgevers').doc(user.id).set({
+      'id': user.id,
+      'createdAt': FieldValue.serverTimestamp(),
+      'firstName': user.firstName,
+      'imageUrl': user.imageUrl,
+      'lastName': user.lastName,
+      'email': user.email,
+      'lastSeen': user.lastSeen,
+      'metadata': user.metadata,
+      'role': user.role?.toShortString(),
+    });
+  }
+
+  Future<void> createBijlesZoekerInFirestore(types.User user) async {
+    await FirebaseFirestore.instance.collection('bijleszoekers').doc(user.id).set({
+      'createdAt': FieldValue.serverTimestamp(),
+      'firstName': user.firstName,
+      'imageUrl': user.imageUrl,
+      'lastName': user.lastName,
+      'email': user.email,
       'lastSeen': user.lastSeen,
       'metadata': user.metadata,
       'role': user.role?.toShortString(),

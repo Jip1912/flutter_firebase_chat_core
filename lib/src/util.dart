@@ -4,8 +4,11 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 /// Fetches user from Firebase and returns a promise
 Future<types.User> fetchUser(String userId, {types.Role? role}) async {
-  final doc =
-      await FirebaseFirestore.instance.collection('users').doc(userId).get();
+  var doc =
+      await FirebaseFirestore.instance.collection('bijlesgevers').doc(userId).get();
+  if(doc.data() == null){
+    doc = await FirebaseFirestore.instance.collection('bijleszoekers').doc(userId).get();
+  }
 
   return processUserDocument(doc, role: role);
 }

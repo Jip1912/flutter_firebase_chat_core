@@ -230,6 +230,14 @@ class FirebaseChatCore {
         partialText: partialMessage,
       );
     }
+    else if (partialMessage is types.PartialPaymentRequest) {
+      message = types.PaymentRequestMessage.fromPartial(
+        author: types.User(id: firebaseUser!.uid),
+        id: '',
+        partialPaymentRequest: partialMessage
+      );
+    }
+    
 
     if (message != null) {
       final messageMap = message.toJson();
@@ -261,7 +269,7 @@ class FirebaseChatCore {
   /// Returns a stream of all users from Firebase
   Stream<List<types.User>> users() {
     if (firebaseUser == null) return const Stream.empty();
-    return FirebaseFirestore.instance.collection('users').snapshots().map(
+    return FirebaseFirestore.instance.collection('bijlesgevers').snapshots().map(
           (snapshot) => snapshot.docs.fold<List<types.User>>(
             [],
             (previousValue, element) {

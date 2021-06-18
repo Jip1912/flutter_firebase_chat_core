@@ -39,6 +39,7 @@ Future<types.Room> processRoomDocument(
   final userIds = doc.data()!['userIds'] as List<dynamic>;
   final userRoles = doc.data()?['userRoles'] as Map<String, dynamic>?;
 
+
   final users = await Future.wait(
     userIds.map(
       (userId) => fetchUser(

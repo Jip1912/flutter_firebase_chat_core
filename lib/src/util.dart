@@ -3,14 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 /// Fetches user from Firebase and returns a promise
-Future<types.User> fetchUser(String userId, {types.Role? role}) async {
+Future<types.User> fetchUser(String userId) async {
   var doc =
       await FirebaseFirestore.instance.collection('bijlesgevers').doc(userId).get();
   if(doc.data() == null){
     doc = await FirebaseFirestore.instance.collection('bijleszoekers').doc(userId).get();
   }
 
-  return processUserDocument(doc, role: role);
+  return processUserDocument(doc);
 }
 
 /// Returns a list of [types.Room] created from Firebase query.
@@ -31,8 +31,8 @@ Future<types.Room> processRoomDocument(
   DocumentSnapshot<Map<String, dynamic>> doc,
   User firebaseUser,
 ) async {
-  final createdAt = doc.data()?['createdAt'] as Timestamp?;
-  var imageUrl = doc.data()?['imageUrl'] as String?;
+  final aangemaaktOp = doc.data()?['aangemaaktOp'] as Timestamp?;
+  var fotoUrl = doc.data()?['fotoUrl'] as String?;
   final metadata = doc.data()?['metadata'] as Map<String, dynamic>?;
   var name = doc.data()?['name'] as String?;
   final type = doc.data()!['type'] as String;
@@ -44,7 +44,7 @@ Future<types.Room> processRoomDocument(
     userIds.map(
       (userId) => fetchUser(
         userId as String,
-        role: types.getRoleFromString(userRoles?[userId] as String?),
+        //role: types.getRoleFromString(userRoles?[userId] as String?),
       ),
     ),
   );
@@ -55,8 +55,8 @@ Future<types.Room> processRoomDocument(
         (u) => u.id != firebaseUser.uid,
       );
 
-      imageUrl = otherUser.imageUrl;
-      name = '${otherUser.firstName} ${otherUser.lastName}';
+      fotoUrl = otherUser.fotoUrl;
+      name = otherUser.naam;
     } catch (e) {
       // Do nothing if other user is not found, because he should be found.
       // Consider falling back to some default values.
@@ -64,9 +64,9 @@ Future<types.Room> processRoomDocument(
   }
 
   final room = types.Room(
-    createdAt: createdAt?.millisecondsSinceEpoch,
+    //createdAt: DateTime.now(),
     id: doc.id,
-    imageUrl: imageUrl,
+    //fotoUrl: fotoUrl,
     metadata: metadata,
     name: name,
     type: types.getRoomTypeFromString(type),
@@ -78,26 +78,25 @@ Future<types.Room> processRoomDocument(
 
 /// Returns a [types.User] created from Firebase document
 types.User processUserDocument(
-  DocumentSnapshot<Map<String, dynamic>> doc, {
-  types.Role? role,
-}) {
-  final createdAt = doc.data()?['createdAt'] as Timestamp?;
-  final firstName = doc.data()?['firstName'] as String?;
-  final imageUrl = doc.data()?['imageUrl'] as String?;
-  final lastName = doc.data()?['lastName'] as String?;
-  final lastSeen = doc.data()?['lastSeen'] as Timestamp?;
+  DocumentSnapshot<Map<String, dynamic>> doc) {
+  final aangemaaktOp = doc.data()?['aangemaaktOp'] as Timestamp?;
+  final naam = doc.data()?['naam'] as String?;
+  final fotoUrl = doc.data()?['fotoUrl'] as String?;
+  final leeftijd = doc.data()?['leeftijd'] as int?;
+  final telefoonnummer = doc.data()?['telefoonnummer'] as String?;
+  final laatstGezien = doc.data()?['laatstGezien'] as Timestamp?;
   final metadata = doc.data()?['metadata'] as Map<String, dynamic>?;
-  final roleString = doc.data()?['role'] as String?;
+
 
   final user = types.User(
-    createdAt: createdAt?.millisecondsSinceEpoch,
-    firstName: firstName,
+    aangemaaktOp: DateTime.now(),
+    naam: naam,
+    leeftijd: leeftijd,
+    telefoonnummer: telefoonnummer,
     id: doc.id,
-    imageUrl: imageUrl,
-    lastName: lastName,
-    lastSeen: lastSeen?.millisecondsSinceEpoch,
+    fotoUrl: fotoUrl,
+    laatstGezien: DateTime.now(),
     metadata: metadata,
-    role: role ?? types.getRoleFromString(roleString),
   );
 
   return user;

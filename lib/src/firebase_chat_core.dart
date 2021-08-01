@@ -42,13 +42,13 @@ class FirebaseChatCore {
       'name': name,
       'type': types.RoomType.group.toShortString(),
       'userIds': roomUsers.map((u) => u.id).toList(),
-      'userRoles': roomUsers.fold<Map<String, String?>>(
-        {},
-        (previousValue, element) => {
-          ...previousValue,
-          element.id: element.role?.toShortString(),
-        },
-      ),
+      // 'userRoles': roomUsers.fold<Map<String, String?>>(
+      //   {},
+      //   (previousValue, element) => {
+      //     ...previousValue,
+      //     element.id: element.role?.toShortString(),
+      //   },
+      // ),
     });
 
     return types.Room(
@@ -112,43 +112,44 @@ class FirebaseChatCore {
 
   /// Creates [types.User] in Firebase to store name and avatar used on
   /// rooms list
-  Future<void> createUserInFirestore(types.User user) async {
-    await FirebaseFirestore.instance.collection('users').doc(user.id).set({
-      'id': user.id,
-      'createdAt': FieldValue.serverTimestamp(),
-      'firstName': user.firstName,
-      'imageUrl': user.imageUrl,
-      'lastName': user.lastName,
-      'lastSeen': user.lastSeen,
-      'metadata': user.metadata,
-      'role': user.role?.toShortString(),
+  // Future<void> createUserInFirestore(types.User user) async {
+  //   await FirebaseFirestore.instance.collection('users').doc(user.id).set({
+  //     'id': user.id,
+  //     'createdAt': FieldValue.serverTimestamp(),
+  //     'firstName': user.firstName,
+  //     'imageUrl': user.imageUrl,
+  //     'lastName': user.lastName,
+  //     'lastSeen': user.lastSeen,
+  //     'metadata': user.metadata,
+  //     'role': user.role?.toShortString(),
+  //   });
+  // }
+
+  Future<void> createBijlesGeverInFirestore(types.Bijlesgever bijlesgever) async {
+    await FirebaseFirestore.instance.collection('bijlesgevers').doc(bijlesgever.id).set({
+      'aangemaaktOp': bijlesgever.aangemaaktOp,
+      'naam': bijlesgever.naam,
+      'leeftijd': bijlesgever.leeftijd,
+      'id': bijlesgever.id,
+      'telefoonnummer': bijlesgever.telefoonnummer,
+      'fotoUrl': bijlesgever.fotoUrl,
+      'laatstGezien': bijlesgever.laatstGezien,
+      'vakken': bijlesgever.vakken,
+      'uurloon': bijlesgever.uurloon,
+      'beschrijving': bijlesgever.beschrijving
     });
   }
 
-  Future<void> createBijlesGeverInFirestore(types.User user) async {
-    await FirebaseFirestore.instance.collection('bijlesgevers').doc(user.id).set({
-      'id': user.id,
-      'createdAt': FieldValue.serverTimestamp(),
-      'firstName': user.firstName,
-      'imageUrl': user.imageUrl,
-      'lastName': user.lastName,
-      'email': user.email,
-      'lastSeen': user.lastSeen,
-      'metadata': user.metadata,
-      'role': user.role?.toShortString(),
-    });
-  }
-
-  Future<void> createBijlesZoekerInFirestore(types.User user) async {
-    await FirebaseFirestore.instance.collection('bijleszoekers').doc(user.id).set({
-      'createdAt': FieldValue.serverTimestamp(),
-      'firstName': user.firstName,
-      'imageUrl': user.imageUrl,
-      'lastName': user.lastName,
-      'email': user.email,
-      'lastSeen': user.lastSeen,
-      'metadata': user.metadata,
-      'role': user.role?.toShortString(),
+  Future<void> createBijlesZoekerInFirestore(types.Bijleszoeker bijleszoeker) async {
+    await FirebaseFirestore.instance.collection('bijleszoekers').doc(bijleszoeker.id).set({
+      'aangemaaktOp': bijleszoeker.aangemaaktOp,
+      'naam': bijleszoeker.naam,
+      'leeftijd': bijleszoeker.leeftijd,
+      'id': bijleszoeker.id,
+      'telefoonnummer': bijleszoeker.telefoonnummer,
+      'fotoUrl': bijleszoeker.fotoUrl,
+      'laatstGezien': bijleszoeker.laatstGezien,
+      'schoolniveau': bijleszoeker.schoolniveau
     });
   }
 

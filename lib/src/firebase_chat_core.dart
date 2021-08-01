@@ -126,7 +126,7 @@ class FirebaseChatCore {
   // }
 
   Future<void> createBijlesGeverInFirestore(types.Bijlesgever bijlesgever) async {
-    await FirebaseFirestore.instance.collection('bijlesgevers').doc(bijlesgever.id).set({
+    await FirebaseFirestore.instance.collection('bijlesgevers').doc(bijlesgever.telefoonnummer).set({
       'aangemaaktOp': bijlesgever.aangemaaktOp,
       'naam': bijlesgever.naam,
       'leeftijd': bijlesgever.leeftijd,
@@ -141,7 +141,7 @@ class FirebaseChatCore {
   }
 
   Future<void> createBijlesZoekerInFirestore(types.Bijleszoeker bijleszoeker) async {
-    await FirebaseFirestore.instance.collection('bijleszoekers').doc(bijleszoeker.id).set({
+    await FirebaseFirestore.instance.collection('bijleszoekers').doc(bijleszoeker.telefoonnummer).set({
       'aangemaaktOp': bijleszoeker.aangemaaktOp,
       'naam': bijleszoeker.naam,
       'leeftijd': bijleszoeker.leeftijd,

@@ -31,8 +31,8 @@ Future<types.Room> processRoomDocument(
   DocumentSnapshot<Map<String, dynamic>> doc,
   User firebaseUser,
 ) async {
-  final aangemaaktOp = doc.data()?['aangemaaktOp'] as Timestamp?;
-  var fotoUrl = doc.data()?['fotoUrl'] as String?;
+  final createdAt = doc.data()?['createdAt'] as Timestamp?;
+  var imageUrl = doc.data()?['imageUrl'] as String?;
   final metadata = doc.data()?['metadata'] as Map<String, dynamic>?;
   var name = doc.data()?['name'] as String?;
   final type = doc.data()!['type'] as String;
@@ -55,7 +55,7 @@ Future<types.Room> processRoomDocument(
         (u) => u.id != firebaseUser.uid,
       );
 
-      fotoUrl = otherUser.fotoUrl;
+      imageUrl = otherUser.fotoUrl;
       name = otherUser.naam;
     } catch (e) {
       // Do nothing if other user is not found, because he should be found.
@@ -64,9 +64,9 @@ Future<types.Room> processRoomDocument(
   }
 
   final room = types.Room(
-    //createdAt: DateTime.now(),
+    createdAt: DateTime.now(),
     id: doc.id,
-    //fotoUrl: fotoUrl,
+    imageUrl: imageUrl,
     metadata: metadata,
     name: name,
     type: types.getRoomTypeFromString(type),
@@ -79,9 +79,9 @@ Future<types.Room> processRoomDocument(
 /// Returns a [types.User] created from Firebase document
 types.User processUserDocument(
   DocumentSnapshot<Map<String, dynamic>> doc) {
-  final aangemaaktOp = doc.data()?['aangemaaktOp'] as Timestamp?;
+  final createdAt = doc.data()?['createdAt'] as Timestamp?;
   final naam = doc.data()?['naam'] as String?;
-  final fotoUrl = doc.data()?['fotoUrl'] as String?;
+  final imageUrl = doc.data()?['imageUrl'] as String?;
   final leeftijd = doc.data()?['leeftijd'] as int?;
   final telefoonnummer = doc.data()?['telefoonnummer'] as String?;
   final laatstGezien = doc.data()?['laatstGezien'] as Timestamp?;
@@ -94,7 +94,7 @@ types.User processUserDocument(
     leeftijd: leeftijd,
     telefoonnummer: telefoonnummer,
     id: doc.id,
-    fotoUrl: fotoUrl,
+    fotoUrl: imageUrl,
     laatstGezien: DateTime.now(),
     metadata: metadata,
   );

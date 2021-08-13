@@ -3,11 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 /// Fetches user from Firebase and returns a promise
-Future<types.User> fetchUser(String userId) async {
+Future<types.User> fetchUser(String? phoneNumber) async {
   var doc =
-      await FirebaseFirestore.instance.collection('bijlesgevers').doc(userId).get();
+      await FirebaseFirestore.instance.collection('bijlesgevers').doc(phoneNumber).get();
   if(doc.data() == null){
-    doc = await FirebaseFirestore.instance.collection('bijleszoekers').doc(userId).get();
+    doc = await FirebaseFirestore.instance.collection('bijleszoekers').doc(phoneNumber).get();
   }
 
   return processUserDocument(doc);

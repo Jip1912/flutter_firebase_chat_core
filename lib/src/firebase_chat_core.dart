@@ -90,7 +90,7 @@ class FirebaseChatCore {
       // Create a new room instead
     }
 
-    final currentUser = await fetchUser(firebaseUser!.uid);
+    final currentUser = await fetchUser(firebaseUser!.phoneNumber);
     final users = [currentUser, otherUser];
 
     final room = await FirebaseFirestore.instance.collection('rooms').add({

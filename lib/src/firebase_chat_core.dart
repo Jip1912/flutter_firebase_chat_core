@@ -42,6 +42,7 @@ class FirebaseChatCore {
       'name': name,
       'type': types.RoomType.group.toShortString(),
       'userIds': roomUsers.map((u) => u.id).toList(),
+      'userPhoneNumbers': roomUsers.map((u) => u.telefoonnummer).toList()
       // 'userRoles': roomUsers.fold<Map<String, String?>>(
       //   {},
       //   (previousValue, element) => {
@@ -99,6 +100,7 @@ class FirebaseChatCore {
       'name': null,
       'type': types.RoomType.direct.toShortString(),
       'userIds': users.map((u) => u.id).toList(),
+      'userPhoneNumbers': users.map((u) => u.telefoonnummer).toList(),
       'userRoles': null,
     });
 

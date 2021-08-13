@@ -21,13 +21,13 @@ class FirebaseChatCore {
       FirebaseChatCore._privateConstructor();
 
   /// Creates a chat group room with [users]. Creator is automatically
-  /// added to the group. [naam] is required and will be used as
-  /// a group naam. Add an optional [fotoUrl] that will be a group avatar
+  /// added to the group. [name] is required and will be used as
+  /// a group name. Add an optional [imageUrl] that will be a group avatar
   /// and [metadata] for any additional custom data.
   Future<types.Room> createGroupRoom({
-    String? fotoUrl,
+    String? imageUrl,
     Map<String, dynamic>? metadata,
-    required String naam,
+    required String name,
     required List<types.User> users,
   }) async {
     if (firebaseUser == null) return Future.error('User does not exist');
@@ -36,10 +36,10 @@ class FirebaseChatCore {
     final roomUsers = [currentUser] + users;
 
     final room = await FirebaseFirestore.instance.collection('rooms').add({
-      'gemaaktOp': FieldValue.serverTimestamp(),
-      'fotoUrl': fotoUrl,
+      'createdAt': FieldValue.serverTimestamp(),
+      'imageUrl': imageUrl,
       'metadata': metadata,
-      'naam': naam,
+      'name': name,
       'type': types.RoomType.group.toShortString(),
       'userIds': roomUsers.map((u) => u.id).toList(),
       // 'userRoles': roomUsers.fold<Map<String, String?>>(
@@ -53,11 +53,11 @@ class FirebaseChatCore {
 
     return types.Room(
       id: room.id,
-      fotoUrl: fotoUrl,
+      imageUrl: imageUrl,
       metadata: metadata,
-      naam: naam,
+      name: name,
       type: types.RoomType.group,
-      gebruikers: roomUsers,
+      users: roomUsers,
     );
   }
 
@@ -80,7 +80,7 @@ class FirebaseChatCore {
       return rooms.firstWhere((room) {
         if (room.type == types.RoomType.group) return false;
 
-        final userIds = room.gebruikers.map((u) => u.id);
+        final userIds = room.users.map((u) => u.id);
         return userIds.contains(firebaseUser!.uid) &&
             userIds.contains(otherUser.id);
       });
@@ -93,10 +93,10 @@ class FirebaseChatCore {
     final users = [currentUser, otherUser];
 
     final room = await FirebaseFirestore.instance.collection('rooms').add({
-      'gemaaktOp': FieldValue.serverTimestamp(),
-      'fotoUrl': null,
+      'createdAt': FieldValue.serverTimestamp(),
+      'imageUrl': null,
       'metadata': metadata,
-      'naam': null,
+      'name': null,
       'type': types.RoomType.direct.toShortString(),
       'userIds': users.map((u) => u.id).toList(),
       'userRoles': null,
@@ -106,19 +106,19 @@ class FirebaseChatCore {
       id: room.id,
       metadata: metadata,
       type: types.RoomType.direct,
-      gebruikers: users,
+      users: users,
     );
   }
 
-  /// Creates [types.User] in Firebase to store naam and avatar used on
+  /// Creates [types.User] in Firebase to store name and avatar used on
   /// rooms list
   // Future<void> createUserInFirestore(types.User user) async {
   //   await FirebaseFirestore.instance.collection('users').doc(user.id).set({
   //     'id': user.id,
-  //     'gemaaktOp': FieldValue.serverTimestamp(),
-  //     'firstnaam': user.firstnaam,
-  //     'fotoUrl': user.fotoUrl,
-  //     'lastnaam': user.lastnaam,
+  //     'createdAt': FieldValue.serverTimestamp(),
+  //     'firstName': user.firstName,
+  //     'imageUrl': user.imageUrl,
+  //     'lastName': user.lastName,
   //     'lastSeen': user.lastSeen,
   //     'metadata': user.metadata,
   //     'role': user.role?.toShortString(),
@@ -157,7 +157,7 @@ class FirebaseChatCore {
   Stream<List<types.Message>> messages(types.Room room) {
     return FirebaseFirestore.instance
         .collection('rooms/${room.id}/messages')
-        .orderBy('gemaaktOp', descending: true)
+        .orderBy('createdAt', descending: true)
         .snapshots()
         .map(
       (snapshot) {
@@ -165,13 +165,13 @@ class FirebaseChatCore {
           [],
           (previousValue, element) {
             final data = element.data();
-            final author = room.gebruikers.firstWhere(
+            final author = room.users.firstWhere(
               (u) => u.id == data['authorId'],
               orElse: () => types.User(id: data['authorId'] as String),
             );
 
             data['author'] = author.toJson();
-            data['gemaaktOp'] = element['gemaaktOp']?.millisecondsSinceEpoch;
+            data['createdAt'] = element['createdAt']?.millisecondsSinceEpoch;
             data['id'] = element.id;
             data.removeWhere((key, value) => key == 'authorId');
             return [...previousValue, types.Message.fromJson(data)];
@@ -244,7 +244,7 @@ class FirebaseChatCore {
       final messageMap = message.toJson();
       messageMap.removeWhere((key, value) => key == 'author' || key == 'id');
       messageMap['authorId'] = firebaseUser!.uid;
-      messageMap['gemaaktOp'] = FieldValue.serverTimestamp();
+      messageMap['createdAt'] = FieldValue.serverTimestamp();
 
       await FirebaseFirestore.instance
           .collection('rooms/$roomId/messages')
@@ -259,7 +259,7 @@ class FirebaseChatCore {
     if (message.author.id != firebaseUser!.uid) return;
 
     final messageMap = message.toJson();
-    messageMap.removeWhere((key, value) => key == 'id' || key == 'gemaaktOp');
+    messageMap.removeWhere((key, value) => key == 'id' || key == 'createdAt');
 
     await FirebaseFirestore.instance
         .collection('rooms/$roomId/messages')

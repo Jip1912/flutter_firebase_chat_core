@@ -14,7 +14,7 @@ Future<types.User> fetchUser(String userId) async {
 }
 
 /// Returns a list of [types.Room] created from Firebase query.
-/// If room has 2 participants, sets correct room name and image.
+/// If room has 2 participants, sets correct room naam and foto.
 Future<List<types.Room>> processRoomsQuery(
   User firebaseUser,
   QuerySnapshot<Map<String, dynamic>> query,
@@ -31,16 +31,16 @@ Future<types.Room> processRoomDocument(
   DocumentSnapshot<Map<String, dynamic>> doc,
   User firebaseUser,
 ) async {
-  final createdAt = doc.data()?['createdAt'] as Timestamp?;
-  var imageUrl = doc.data()?['imageUrl'] as String?;
+  final aangemaaktOp = doc.data()?['aangemaaktOp'] as Timestamp?;
+  var fotoUrl = doc.data()?['fotoUrl'] as String?;
   final metadata = doc.data()?['metadata'] as Map<String, dynamic>?;
-  var name = doc.data()?['name'] as String?;
+  var naam = doc.data()?['naam'] as String?;
   final type = doc.data()!['type'] as String;
   final userIds = doc.data()!['userIds'] as List<dynamic>;
   final userRoles = doc.data()?['userRoles'] as Map<String, dynamic>?;
 
 
-  final users = await Future.wait(
+  final gebruikers = await Future.wait(
     userIds.map(
       (userId) => fetchUser(
         userId as String,
@@ -51,12 +51,12 @@ Future<types.Room> processRoomDocument(
 
   if (type == types.RoomType.direct.toShortString()) {
     try {
-      final otherUser = users.firstWhere(
+      final otherUser = gebruikers.firstWhere(
         (u) => u.id != firebaseUser.uid,
       );
 
-      imageUrl = otherUser.fotoUrl;
-      name = otherUser.naam;
+      fotoUrl = otherUser.fotoUrl;
+      naam = otherUser.naam;
     } catch (e) {
       // Do nothing if other user is not found, because he should be found.
       // Consider falling back to some default values.
@@ -64,13 +64,13 @@ Future<types.Room> processRoomDocument(
   }
 
   final room = types.Room(
-    createdAt: DateTime.now(),
+    aangemaaktOp: DateTime.now(),
     id: doc.id,
-    imageUrl: imageUrl,
+    fotoUrl: fotoUrl,
     metadata: metadata,
-    name: name,
+    naam: naam,
     type: types.getRoomTypeFromString(type),
-    users: users,
+    gebruikers: gebruikers,
   );
 
   return room;
@@ -79,9 +79,9 @@ Future<types.Room> processRoomDocument(
 /// Returns a [types.User] created from Firebase document
 types.User processUserDocument(
   DocumentSnapshot<Map<String, dynamic>> doc) {
-  final createdAt = doc.data()?['createdAt'] as Timestamp?;
+  final aangemaaktOp = doc.data()?['aangemaaktOp'] as Timestamp?;
   final naam = doc.data()?['naam'] as String?;
-  final imageUrl = doc.data()?['imageUrl'] as String?;
+  final fotoUrl = doc.data()?['fotoUrl'] as String?;
   final leeftijd = doc.data()?['leeftijd'] as int?;
   final telefoonnummer = doc.data()?['telefoonnummer'] as String?;
   final laatstGezien = doc.data()?['laatstGezien'] as Timestamp?;
@@ -94,7 +94,7 @@ types.User processUserDocument(
     leeftijd: leeftijd,
     telefoonnummer: telefoonnummer,
     id: doc.id,
-    fotoUrl: imageUrl,
+    fotoUrl: fotoUrl,
     laatstGezien: DateTime.now(),
     metadata: metadata,
   );

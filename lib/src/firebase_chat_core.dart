@@ -278,6 +278,18 @@ class FirebaseChatCore {
         .update(messageMap);
   }
 
+  void updatePaymentRequest(types.PartialPaymentRequest message, String roomId,
+      String messageId) async {
+    if (firebaseUser == null) return;
+
+    final messageMap = message.toJson();
+
+    await FirebaseFirestore.instance
+        .collection('rooms/$roomId/messages')
+        .doc(messageId)
+        .update(messageMap);
+  }
+
   /// Returns a stream of all users from Firebase
   Stream<List<types.User>> users() {
     if (firebaseUser == null) return const Stream.empty();

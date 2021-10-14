@@ -127,8 +127,12 @@ class FirebaseChatCore {
   //   });
   // }
 
-  Future<void> createBijlesGeverInFirestore(types.Bijlesgever bijlesgever) async {
-    await FirebaseFirestore.instance.collection('bijlesgevers').doc(bijlesgever.telefoonnummer).set({
+  Future<void> createBijlesGeverInFirestore(
+      types.Bijlesgever bijlesgever) async {
+    await FirebaseFirestore.instance
+        .collection('bijlesgevers')
+        .doc(bijlesgever.telefoonnummer)
+        .set({
       'aangemaaktOp': bijlesgever.aangemaaktOp,
       'naam': bijlesgever.naam,
       'leeftijd': bijlesgever.leeftijd,
@@ -142,8 +146,12 @@ class FirebaseChatCore {
     });
   }
 
-  Future<void> createBijlesZoekerInFirestore(types.Bijleszoeker bijleszoeker) async {
-    await FirebaseFirestore.instance.collection('bijleszoekers').doc(bijleszoeker.telefoonnummer).set({
+  Future<void> createBijlesZoekerInFirestore(
+      types.Bijleszoeker bijleszoeker) async {
+    await FirebaseFirestore.instance
+        .collection('bijleszoekers')
+        .doc(bijleszoeker.telefoonnummer)
+        .set({
       'aangemaaktOp': bijleszoeker.aangemaaktOp,
       'naam': bijleszoeker.naam,
       'leeftijd': bijleszoeker.leeftijd,
@@ -209,8 +217,9 @@ class FirebaseChatCore {
   /// Sends a message to the Firestore. Accepts any partial message and a
   /// room ID. If arbitraty data is provided in the [partialMessage]
   /// does nothing.
-  void sendMessage(dynamic partialMessage, String roomId) async {
-    if (firebaseUser == null) return;
+  Future<types.Message?> sendMessage(
+      dynamic partialMessage, String roomId) async {
+    if (firebaseUser == null) return null;
 
     types.Message? message;
 
@@ -232,15 +241,12 @@ class FirebaseChatCore {
         id: '',
         partialText: partialMessage,
       );
-    }
-    else if (partialMessage is types.PartialPaymentRequest) {
+    } else if (partialMessage is types.PartialPaymentRequest) {
       message = types.PaymentRequestMessage.fromPartial(
-        author: types.User(id: firebaseUser!.uid),
-        id: '',
-        partialPaymentRequest: partialMessage
-      );
+          author: types.User(id: firebaseUser!.uid),
+          id: '',
+          partialPaymentRequest: partialMessage);
     }
-    
 
     if (message != null) {
       final messageMap = message.toJson();
@@ -251,7 +257,10 @@ class FirebaseChatCore {
       await FirebaseFirestore.instance
           .collection('rooms/$roomId/messages')
           .add(messageMap);
+
+      return message;
     }
+    return null;
   }
 
   /// Updates a message in the Firestore. Accepts any message and a
@@ -272,7 +281,10 @@ class FirebaseChatCore {
   /// Returns a stream of all users from Firebase
   Stream<List<types.User>> users() {
     if (firebaseUser == null) return const Stream.empty();
-    return FirebaseFirestore.instance.collection('bijlesgevers').snapshots().map(
+    return FirebaseFirestore.instance
+        .collection('bijlesgevers')
+        .snapshots()
+        .map(
           (snapshot) => snapshot.docs.fold<List<types.User>>(
             [],
             (previousValue, element) {

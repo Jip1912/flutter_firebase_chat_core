@@ -217,8 +217,7 @@ class FirebaseChatCore {
   /// Sends a message to the Firestore. Accepts any partial message and a
   /// room ID. If arbitraty data is provided in the [partialMessage]
   /// does nothing.
-  Future<types.Message?> sendMessage(
-      dynamic partialMessage, String roomId) async {
+  Future<String?> sendMessage(dynamic partialMessage, String roomId) async {
     if (firebaseUser == null) return null;
 
     types.Message? message;
@@ -254,13 +253,14 @@ class FirebaseChatCore {
       messageMap['authorId'] = firebaseUser!.uid;
       messageMap['createdAt'] = FieldValue.serverTimestamp();
 
+      String messageId = 'error';
       await FirebaseFirestore.instance
           .collection('rooms/$roomId/messages')
-          .add(messageMap);
+          .add(messageMap)
+          .then((value) => messageId = value.id);
 
-      return message;
+      return messageId;
     }
-    return null;
   }
 
   /// Updates a message in the Firestore. Accepts any message and a

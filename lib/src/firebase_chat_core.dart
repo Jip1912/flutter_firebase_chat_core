@@ -99,7 +99,7 @@ class FirebaseChatCore {
       'metadata': metadata,
       'name': null,
       'type': types.RoomType.direct.toShortString(),
-      'userIds': users.map((u) => u.id).toList(),
+      'userIds': [firebaseUser!.uid, otherUser.id].toList(),
       'userPhoneNumbers': users.map((u) => u.telefoonnummer).toList(),
       'userRoles': null,
     });

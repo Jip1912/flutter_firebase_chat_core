@@ -140,8 +140,11 @@ class FirebaseChatCore {
       'telefoonnummer': bijlesgever.telefoonnummer,
       'fotoUrl': bijlesgever.fotoUrl,
       'laatstGezien': bijlesgever.laatstGezien,
+      'fcm': bijlesgever.fcm,
       'vakken': bijlesgever.vakken,
       'uurloon': bijlesgever.uurloon,
+      'locatie': bijlesgever.location,
+      'radius': bijlesgever.radius,
       'beschrijving': bijlesgever.beschrijving
     });
   }
@@ -159,6 +162,7 @@ class FirebaseChatCore {
       'telefoonnummer': bijleszoeker.telefoonnummer,
       'fotoUrl': bijleszoeker.fotoUrl,
       'laatstGezien': bijleszoeker.laatstGezien,
+      'fcm': bijleszoeker.fcm,
       'schoolniveau': bijleszoeker.schoolniveau
     });
   }

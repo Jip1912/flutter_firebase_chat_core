@@ -88,7 +88,7 @@ types.User processUserDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
   final leeftijd = doc.data()?['leeftijd'] as int?;
   final telefoonnummer = doc.data()?['telefoonnummer'] as String?;
   final laatstGezien = doc.data()?['laatstGezien'] as Timestamp?;
-  final fcm = doc.data()?['fcm'] as Map<String, DateTime>?;
+  final fcm = doc.data()?['fcm'] as dynamic;
   final metadata = doc.data()?['metadata'] as Map<String, dynamic>?;
 
   final user = types.User(

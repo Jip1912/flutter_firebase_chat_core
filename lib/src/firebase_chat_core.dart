@@ -102,7 +102,7 @@ class FirebaseChatCore {
       'imageUrl': null,
       'metadata': metadata,
       'name': null,
-      'users': <DocumentReference<Map<String, dynamic>>>{
+      'users': {
         FirebaseFirestore.instance
             .doc('bijleszoekers/${currentUser.telefoonnummer}'),
         FirebaseFirestore.instance
@@ -150,6 +150,7 @@ class FirebaseChatCore {
       'telefoonnummer': bijlesgever.telefoonnummer,
       'fotoUrl': bijlesgever.fotoUrl,
       'laatstGezien': bijlesgever.laatstGezien,
+      'isBijlesgever': bijlesgever.isBijlesgever,
       'fcm': bijlesgever.fcm,
       'vakken': bijlesgever.vakken,
       'uurloon': bijlesgever.uurloon,
@@ -172,6 +173,7 @@ class FirebaseChatCore {
       'telefoonnummer': bijleszoeker.telefoonnummer,
       'fotoUrl': bijleszoeker.fotoUrl,
       'laatstGezien': bijleszoeker.laatstGezien,
+      'isBijlesgever': bijleszoeker.isBijlesgever,
       'fcm': bijleszoeker.fcm,
       'schoolniveau': bijleszoeker.schoolniveau
     });

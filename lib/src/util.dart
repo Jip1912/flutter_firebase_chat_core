@@ -4,10 +4,15 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 /// Fetches user from Firebase and returns a promise
 Future<types.User> fetchUser(String? phoneNumber) async {
-  var doc =
-      await FirebaseFirestore.instance.collection('bijlesgevers').doc(phoneNumber).get();
-  if(doc.data() == null){
-    doc = await FirebaseFirestore.instance.collection('bijleszoekers').doc(phoneNumber).get();
+  var doc = await FirebaseFirestore.instance
+      .collection('bijlesgevers')
+      .doc(phoneNumber)
+      .get();
+  if (doc.data() == null) {
+    doc = await FirebaseFirestore.instance
+        .collection('bijleszoekers')
+        .doc(phoneNumber)
+        .get();
   }
 
   return processUserDocument(doc);
@@ -38,7 +43,6 @@ Future<types.Room> processRoomDocument(
   final type = doc.data()!['type'] as String;
   final userIds = doc.data()!['userIds'] as List<dynamic>;
   final userRoles = doc.data()?['userRoles'] as Map<String, dynamic>?;
-
 
   final users = await Future.wait(
     userIds.map(
@@ -77,25 +81,25 @@ Future<types.Room> processRoomDocument(
 }
 
 /// Returns a [types.User] created from Firebase document
-types.User processUserDocument(
-  DocumentSnapshot<Map<String, dynamic>> doc) {
-  final createdAt = doc.data()?['createdAt'] as Timestamp?;
+types.User processUserDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
+  final aangemaaktOp = doc.data()?['aangemaaktOp'] as DateTime?;
   final naam = doc.data()?['naam'] as String?;
-  final imageUrl = doc.data()?['imageUrl'] as String?;
+  final fotoUrl = doc.data()?['fotoUrl'] as String?;
   final leeftijd = doc.data()?['leeftijd'] as int?;
   final telefoonnummer = doc.data()?['telefoonnummer'] as String?;
-  final laatstGezien = doc.data()?['laatstGezien'] as Timestamp?;
+  final laatstGezien = doc.data()?['laatstGezien'] as DateTime?;
+  final fcm = doc.data()?['fcm'] as Map<String, DateTime>?;
   final metadata = doc.data()?['metadata'] as Map<String, dynamic>?;
 
-
   final user = types.User(
-    aangemaaktOp: DateTime.now(),
+    aangemaaktOp: aangemaaktOp,
     naam: naam,
     leeftijd: leeftijd,
     telefoonnummer: telefoonnummer,
     id: doc.id,
-    fotoUrl: imageUrl,
-    laatstGezien: DateTime.now(),
+    fotoUrl: fotoUrl,
+    fcm: fcm,
+    laatstGezien: laatstGezien,
     metadata: metadata,
   );
 

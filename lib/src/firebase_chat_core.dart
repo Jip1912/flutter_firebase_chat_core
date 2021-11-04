@@ -102,12 +102,12 @@ class FirebaseChatCore {
       'imageUrl': null,
       'metadata': metadata,
       'name': null,
-      'users': {
+      'users': [
         FirebaseFirestore.instance
             .doc('bijleszoekers/${currentUser.telefoonnummer}'),
         FirebaseFirestore.instance
             .doc('bijlesgevers/${otherUser.telefoonnummer}')
-      },
+      ],
       'type': types.RoomType.direct.toShortString(),
       'userIds': [firebaseUser!.uid, otherUser.id].toList(),
       'userPhoneNumbers': users.map((u) => u.telefoonnummer).toList(),

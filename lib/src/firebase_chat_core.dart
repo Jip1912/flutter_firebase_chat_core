@@ -92,12 +92,22 @@ class FirebaseChatCore {
 
     final currentUser = await fetchUser(firebaseUser!.phoneNumber);
     final users = [currentUser, otherUser];
+    await FirebaseFirestore.instance
+        .collection('bijlesgevers')
+        .doc(otherUser.telefoonnummer)
+        .get();
 
     final room = await FirebaseFirestore.instance.collection('rooms').add({
       'createdAt': FieldValue.serverTimestamp(),
       'imageUrl': null,
       'metadata': metadata,
       'name': null,
+      'users': <DocumentReference<Map<String, dynamic>>>{
+        FirebaseFirestore.instance
+            .doc('bijleszoekers/${currentUser.telefoonnummer}'),
+        FirebaseFirestore.instance
+            .doc('bijlesgevers/${otherUser.telefoonnummer}')
+      },
       'type': types.RoomType.direct.toShortString(),
       'userIds': [firebaseUser!.uid, otherUser.id].toList(),
       'userPhoneNumbers': users.map((u) => u.telefoonnummer).toList(),

@@ -82,24 +82,24 @@ Future<types.Room> processRoomDocument(
 
 /// Returns a [types.User] created from Firebase document
 types.User processUserDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
-  final aangemaaktOp = doc.data()?['aangemaaktOp'] as DateTime?;
+  final aangemaaktOp = doc.data()?['aangemaaktOp'] as Timestamp?;
   final naam = doc.data()?['naam'] as String?;
   final fotoUrl = doc.data()?['fotoUrl'] as String?;
   final leeftijd = doc.data()?['leeftijd'] as int?;
   final telefoonnummer = doc.data()?['telefoonnummer'] as String?;
-  final laatstGezien = doc.data()?['laatstGezien'] as DateTime?;
+  final laatstGezien = doc.data()?['laatstGezien'] as Timestamp?;
   final fcm = doc.data()?['fcm'] as Map<String, DateTime>?;
   final metadata = doc.data()?['metadata'] as Map<String, dynamic>?;
 
   final user = types.User(
-    aangemaaktOp: aangemaaktOp,
+    aangemaaktOp: aangemaaktOp?.toDate(),
     naam: naam,
     leeftijd: leeftijd,
     telefoonnummer: telefoonnummer,
     id: doc.id,
     fotoUrl: fotoUrl,
     fcm: fcm,
-    laatstGezien: laatstGezien,
+    laatstGezien: laatstGezien?.toDate(),
     metadata: metadata,
   );
 

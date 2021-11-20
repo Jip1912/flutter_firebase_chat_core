@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
@@ -14,7 +16,6 @@ Future<types.User> fetchUser(String? phoneNumber) async {
         .doc(phoneNumber)
         .get();
   }
-
   return processUserDocument(doc);
 }
 
@@ -42,12 +43,13 @@ Future<types.Room> processRoomDocument(
   var name = doc.data()?['name'] as String?;
   final type = doc.data()!['type'] as String;
   final userIds = doc.data()!['userIds'] as List<dynamic>;
+  final userPhoneNumbers = doc.data()?['userPhoneNumbers'] as List<dynamic>;
   final userRoles = doc.data()?['userRoles'] as Map<String, dynamic>?;
 
   final users = await Future.wait(
-    userIds.map(
-      (userId) => fetchUser(
-        userId as String,
+    userPhoneNumbers.map(
+      (userPhoneNumber) => fetchUser(
+        userPhoneNumber as String,
         //role: types.getRoleFromString(userRoles?[userId] as String?),
       ),
     ),
@@ -88,8 +90,12 @@ types.User processUserDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
   final leeftijd = doc.data()?['leeftijd'] as int?;
   final telefoonnummer = doc.data()?['telefoonnummer'] as String?;
   final laatstGezien = doc.data()?['laatstGezien'] as Timestamp?;
-  final fcm = doc.data()?['fcm'] as dynamic;
+
   final metadata = doc.data()?['metadata'] as Map<String, dynamic>?;
+
+  final fcm = doc.data()?['fcm'] as Map<String, dynamic>;
+  final Map<String, DateTime> fcmDoc =
+      fcm.map((k, v) => MapEntry(k, (v as Timestamp).toDate()));
 
   final user = types.User(
     aangemaaktOp: aangemaaktOp?.toDate(),
@@ -98,7 +104,7 @@ types.User processUserDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
     telefoonnummer: telefoonnummer,
     id: doc.id,
     fotoUrl: fotoUrl,
-    fcm: fcm,
+    fcm: fcmDoc,
     laatstGezien: laatstGezien?.toDate(),
     metadata: metadata,
   );

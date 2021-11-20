@@ -92,10 +92,6 @@ class FirebaseChatCore {
 
     final currentUser = await fetchUser(firebaseUser!.phoneNumber);
     final users = [currentUser, otherUser];
-    await FirebaseFirestore.instance
-        .collection('bijlesgevers')
-        .doc(otherUser.telefoonnummer)
-        .get();
 
     final room = await FirebaseFirestore.instance.collection('rooms').add({
       'createdAt': FieldValue.serverTimestamp(),

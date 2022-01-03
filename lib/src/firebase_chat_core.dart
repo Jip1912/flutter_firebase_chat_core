@@ -81,9 +81,9 @@ class FirebaseChatCore {
       return rooms.firstWhere((room) {
         if (room.type == types.RoomType.group) return false;
 
-        final userIds = room.users.map((u) => u.id);
-        return userIds.contains(firebaseUser!.uid) &&
-            userIds.contains(otherUser.id);
+        final userPhoneNumbers = room.users.map((u) => u.telefoonnummer);
+        return userPhoneNumbers.contains(firebaseUser!.phoneNumber) &&
+            userPhoneNumbers.contains(otherUser.telefoonnummer);
       });
     } catch (e) {
       // Do nothing if room does not exist
@@ -221,7 +221,7 @@ class FirebaseChatCore {
 
     return FirebaseFirestore.instance
         .collection('rooms')
-        .where('userIds', arrayContains: firebaseUser!.uid)
+        .where('userIds', arrayContains: firebaseUser!.phoneNumber)
         .snapshots()
         .asyncMap((query) => processRoomsQuery(firebaseUser!, query));
   }

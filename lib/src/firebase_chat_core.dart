@@ -221,7 +221,7 @@ class FirebaseChatCore {
 
     return FirebaseFirestore.instance
         .collection('rooms')
-        .where('userIds', arrayContains: firebaseUser!.phoneNumber)
+        .where('userIds', arrayContains: firebaseUser!.uid)
         .snapshots()
         .asyncMap((query) => processRoomsQuery(firebaseUser!, query));
   }

@@ -203,6 +203,18 @@ class FirebaseChatCore {
     );
   }
 
+  /// Returns last message of this room
+  Future<String> lastMessage(types.Room room) async {
+    final QuerySnapshot<Map<String, dynamic>> last = await FirebaseFirestore
+        .instance
+        .collection('rooms/${room.id}/messages')
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .last;
+
+    return last.docs.last.data()['text'].toString();
+  }
+
   /// Returns a stream of changes in a room from Firebase
   Stream<types.Room> room(String roomId) {
     if (firebaseUser == null) return const Stream.empty();

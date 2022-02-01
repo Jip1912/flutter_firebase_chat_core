@@ -87,9 +87,8 @@ types.User processUserDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
   final leeftijd = doc.data()?['leeftijd'] as int?;
   final telefoonnummer = doc.data()?['telefoonnummer'] as String?;
   final laatstGezien = doc.data()?['laatstGezien'] as Timestamp?;
-
+  final isBijlesgever = doc.data()?['isBijlesgever'] as bool?;
   final metadata = doc.data()?['metadata'] as Map<String, dynamic>?;
-
   final fcm = doc.data()?['fcm'] as Map<String, dynamic>;
   final Map<String, DateTime> fcmDoc =
       fcm.map((k, v) => MapEntry(k, (v as Timestamp).toDate()));
@@ -103,6 +102,7 @@ types.User processUserDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
     fotoUrl: fotoUrl,
     fcm: fcmDoc,
     laatstGezien: laatstGezien?.toDate(),
+    isBijlesgever: isBijlesgever,
     metadata: metadata,
   );
 

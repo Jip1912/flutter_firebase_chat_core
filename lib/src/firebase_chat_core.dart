@@ -211,7 +211,7 @@ class FirebaseChatCore {
             .orderBy('createdAt', descending: true)
             .get();
     final QueryDocumentSnapshot<Map<String, dynamic>> doc =
-        collection.docs.last;
+        collection.docs.first;
     return {
       'message': doc.data()['text'].toString(),
       'authorId': doc.data()['authorId'].toString()

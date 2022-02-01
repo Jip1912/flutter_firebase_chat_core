@@ -150,7 +150,7 @@ class FirebaseChatCore {
       'fcm': bijlesgever.fcm,
       'vakken': bijlesgever.vakken,
       'uurloon': bijlesgever.uurloon,
-      'locatie': bijlesgever.location,
+      'locatie': bijlesgever.locatie,
       'radius': bijlesgever.radius,
       'beschrijving': bijlesgever.beschrijving
     });

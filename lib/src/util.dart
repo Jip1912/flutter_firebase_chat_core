@@ -89,8 +89,6 @@ types.User processUserDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
   final laatstGezien = doc.data()?['laatstGezien'] as Timestamp?;
   final isBijlesgever = doc.data()?['isBijlesgever'] as bool?;
   final metadata = doc.data()?['metadata'] as Map<String, dynamic>?;
-  final locatie = doc.data()?['locatie']['geopoint'] as GeoPoint?;
-  final radius = doc.data()?['radius'] as double?;
   final fcm = doc.data()?['fcm'] as Map<String, dynamic>;
   final Map<String, DateTime> fcmDoc =
       fcm.map((k, v) => MapEntry(k, (v as Timestamp).toDate()));
@@ -105,8 +103,6 @@ types.User processUserDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
     fcm: fcmDoc,
     laatstGezien: laatstGezien?.toDate(),
     isBijlesgever: isBijlesgever,
-    locatie: locatie,
-    radius: radius,
     metadata: metadata,
   );
 

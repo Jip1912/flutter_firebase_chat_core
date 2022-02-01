@@ -17,6 +17,22 @@ Future<types.User> fetchUser(String? phoneNumber) async {
   return processUserDocument(doc);
 }
 
+Future<types.Bijlesgever> fetchBijlesgever(String? phoneNumber) async {
+  final doc = await FirebaseFirestore.instance
+      .collection('bijlesgevers')
+      .doc(phoneNumber)
+      .get();
+  return processBijlesgeverDocument(doc);
+}
+
+Future<types.Bijlesgever> fetchBijleszoeker(String? phoneNumber) async {
+  final doc = await FirebaseFirestore.instance
+      .collection('bijleszoekers')
+      .doc(phoneNumber)
+      .get();
+  return processBijlesgeverDocument(doc);
+}
+
 /// Returns a list of [types.Room] created from Firebase query.
 /// If room has 2 participants, sets correct room name and image.
 Future<List<types.Room>> processRoomsQuery(
@@ -94,17 +110,88 @@ types.User processUserDocument(DocumentSnapshot<Map<String, dynamic>> doc) {
       fcm.map((k, v) => MapEntry(k, (v as Timestamp).toDate()));
 
   final user = types.User(
-    aangemaaktOp: aangemaaktOp?.toDate(),
-    naam: naam,
-    leeftijd: leeftijd,
-    telefoonnummer: telefoonnummer,
-    id: doc.id,
-    fotoUrl: fotoUrl,
-    fcm: fcmDoc,
-    laatstGezien: laatstGezien?.toDate(),
-    isBijlesgever: isBijlesgever,
-    metadata: metadata,
-  );
+      aangemaaktOp: aangemaaktOp?.toDate(),
+      naam: naam,
+      leeftijd: leeftijd,
+      telefoonnummer: telefoonnummer,
+      id: doc.id,
+      fotoUrl: fotoUrl,
+      fcm: fcmDoc,
+      laatstGezien: laatstGezien?.toDate(),
+      isBijlesgever: isBijlesgever,
+      metadata: metadata);
+
+  return user;
+}
+
+/// Returns a [types.User] created from Firebase document
+types.Bijlesgever processBijlesgeverDocument(
+    DocumentSnapshot<Map<String, dynamic>> doc) {
+  final aangemaaktOp = doc.data()?['aangemaaktOp'] as Timestamp?;
+  final naam = doc.data()?['naam'] as String?;
+  final fotoUrl = doc.data()?['fotoUrl'] as String?;
+  final leeftijd = doc.data()?['leeftijd'] as int?;
+  final telefoonnummer = doc.data()?['telefoonnummer'] as String?;
+  final laatstGezien = doc.data()?['laatstGezien'] as Timestamp?;
+  final isBijlesgever = doc.data()?['isBijlesgever'] as bool?;
+  final metadata = doc.data()?['metadata'] as Map<String, dynamic>?;
+  final fcm = doc.data()?['fcm'] as Map<String, dynamic>;
+  final Map<String, DateTime> fcmDoc =
+      fcm.map((k, v) => MapEntry(k, (v as Timestamp).toDate()));
+  final vakken = doc.data()?['vakken'] as List<String>?;
+  final uurloon = doc.data()?['uurloon'] as int?;
+  final beschrijving = doc.data()?['beschrijving'] as String;
+  final locatie = doc.data()?['locatie'] as dynamic;
+  final radius = doc.data()?['radius'] as double?;
+
+  final user = types.Bijlesgever(
+      aangemaaktOp: aangemaaktOp?.toDate(),
+      naam: naam,
+      leeftijd: leeftijd,
+      telefoonnummer: telefoonnummer,
+      id: doc.id,
+      fotoUrl: fotoUrl,
+      fcm: fcmDoc,
+      laatstGezien: laatstGezien?.toDate(),
+      isBijlesgever: isBijlesgever,
+      metadata: metadata,
+      vakken: vakken,
+      uurloon: uurloon,
+      beschrijving: beschrijving,
+      locatie: locatie,
+      radius: radius);
+
+  return user;
+}
+
+/// Returns a [types.User] created from Firebase document
+types.Bijleszoeker processBijleszoekerDocument(
+    DocumentSnapshot<Map<String, dynamic>> doc) {
+  final aangemaaktOp = doc.data()?['aangemaaktOp'] as Timestamp?;
+  final naam = doc.data()?['naam'] as String?;
+  final fotoUrl = doc.data()?['fotoUrl'] as String?;
+  final leeftijd = doc.data()?['leeftijd'] as int?;
+  final telefoonnummer = doc.data()?['telefoonnummer'] as String?;
+  final laatstGezien = doc.data()?['laatstGezien'] as Timestamp?;
+  final isBijlesgever = doc.data()?['isBijlesgever'] as bool?;
+  final metadata = doc.data()?['metadata'] as Map<String, dynamic>?;
+  final fcm = doc.data()?['fcm'] as Map<String, dynamic>;
+  final Map<String, DateTime> fcmDoc =
+      fcm.map((k, v) => MapEntry(k, (v as Timestamp).toDate()));
+  final schoolniveau = doc.data()?['schoolniveau'] as String?;
+
+  final user = types.Bijleszoeker(
+      aangemaaktOp: aangemaaktOp?.toDate(),
+      naam: naam,
+      leeftijd: leeftijd,
+      telefoonnummer: telefoonnummer,
+      id: doc.id,
+      fotoUrl: fotoUrl,
+      fcm: fcmDoc,
+      laatstGezien: laatstGezien?.toDate(),
+      isBijlesgever: isBijlesgever,
+      metadata: metadata,
+      schoolniveau: schoolniveau);
 
   return user;
 }

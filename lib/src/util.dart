@@ -25,12 +25,12 @@ Future<types.Bijlesgever> fetchBijlesgever(String? phoneNumber) async {
   return processBijlesgeverDocument(doc);
 }
 
-Future<types.Bijlesgever> fetchBijleszoeker(String? phoneNumber) async {
+Future<types.Bijleszoeker> fetchBijleszoeker(String? phoneNumber) async {
   final doc = await FirebaseFirestore.instance
       .collection('bijleszoekers')
       .doc(phoneNumber)
       .get();
-  return processBijlesgeverDocument(doc);
+  return processBijleszoekerDocument(doc);
 }
 
 /// Returns a list of [types.Room] created from Firebase query.

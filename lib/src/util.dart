@@ -138,7 +138,8 @@ types.Bijlesgever processBijlesgeverDocument(
   final fcm = doc.data()?['fcm'] as Map<String, dynamic>;
   final Map<String, DateTime> fcmDoc =
       fcm.map((k, v) => MapEntry(k, (v as Timestamp).toDate()));
-  final vakken = doc.data()?['vakken'] as List<String>?;
+  final vakken =
+      (doc.data()?['vakken'] as Iterable<dynamic>?)?.cast<String>().toList();
   final uurloon = doc.data()?['uurloon'] as int?;
   final beschrijving = doc.data()?['beschrijving'] as String;
   final locatie = doc.data()?['locatie'] as dynamic;
